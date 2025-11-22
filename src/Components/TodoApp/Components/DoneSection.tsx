@@ -1,19 +1,10 @@
-import type {todoType} from "../Types/TodoAppTypes.ts";
 import {Container, Flex} from "@radix-ui/themes";
 import Todo from "./Todo.tsx";
+import {useTodoStore} from "../Store/TodoStore.ts";
 
 export default function DoneSection() {
-    const exampleTodo = {
-        id: "1",
-        description: "Beispiel Todo",
-        status: "DONE" as const,
-    }
-    const exampleTodo2 = {
-        id: "1",
-        description: "Beispiel Todo asdasdasdasdasdasdasd asdasdasdasdasdasdasdasdasdasdasdasd",
-        status: "DONE" as const,
-    }
-    const todos: todoType[] = [exampleTodo, exampleTodo2];
+    const {allTodos} = useTodoStore();
+    const todos = allTodos.filter((todo) => todo.status === "DONE");
 
     return (
         <>

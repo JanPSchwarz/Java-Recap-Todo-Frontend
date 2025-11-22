@@ -3,14 +3,14 @@ import {Button} from "@radix-ui/themes";
 import {useState} from "react";
 import type {RickAndMortyCharacterType} from "../../../../lib/RickAndMortyCharacters.ts";
 import CharactersView from "../RickAndMortyBasics/CharactersView.tsx";
-import {useGlobalAlertStore} from "../../TodoApp/Store/GlobalAlertStore.ts";
+import {useGlobalCallOutStore} from "../../TodoApp/Store/GlobalCallOutStore.ts";
 
 export default function Axios() {
 
     const [allCharacters, setAllCharacters] = useState<RickAndMortyCharacterType[]>();
     const [loading, setLoading] = useState<boolean>(false);
 
-    const {setGlobalAlert} = useGlobalAlertStore();
+    const {setGlobalCallOut} = useGlobalCallOutStore();
 
     const getRickAndMortyData = () => {
         setLoading(true);
@@ -18,7 +18,7 @@ export default function Axios() {
             setAllCharacters(response.data.results);
         }).catch((error) => {
             console.error(error);
-            setGlobalAlert(error.message, "error");
+            setGlobalCallOut(error.message, "error");
         }).finally(() => {
             setLoading(false);
         })

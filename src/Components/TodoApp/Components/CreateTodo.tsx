@@ -1,8 +1,7 @@
 import {Button, Container, Dialog, Flex, RadioGroup, Text, TextField} from "@radix-ui/themes";
 import React, {useState} from "react";
-import axios from "axios";
-import {useGlobalAlertStore} from "../Store/GlobalAlertStore.ts";
-import {useModalStore} from "../Store/ModalStore.ts";
+import {useTodoStore} from "../Store/TodoStore.ts";
+import type {todoTypeDTO} from "../Types/TodoAppTypes.ts";
 
 type createTodoProps = {
     status?: "OPEN" | "IN_PROGRESS" | "DONE" | undefined;
@@ -12,8 +11,7 @@ export default function CreateTodo({status}: createTodoProps) {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const {setModalOpen} = useModalStore();
-    const {setGlobalAlert} = useGlobalAlertStore();
+    const {createTodo} = useTodoStore();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -25,18 +23,8 @@ export default function CreateTodo({status}: createTodoProps) {
             return;
         }
 
-        console.log(data);
         setIsLoading(true);
-        axios.post("/api/todo", data).then((response) => {
-            setGlobalAlert("Todo created successfully", "success");
-            console.log("Todo created:", response.data);
-        }).catch((error) => {
-            console.error("Error creating todo:", error);
-            setGlobalAlert(error.message || "Failed to create todo", "error");
-        }).finally(() => {
-            setModalOpen(false)
-            setIsLoading(false);
-        });
+        createTodo(data as todoTypeDTO);
     }
 
     return (

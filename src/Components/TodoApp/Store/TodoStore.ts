@@ -1,7 +1,7 @@
-import {create} from "zustand/react";
+import {create} from "zustand";
 import axios from "axios";
 import type {todoType, todoTypeDTO} from "../Types/TodoAppTypes.ts";
-import {useGlobalAlertStore} from "./GlobalAlertStore.ts";
+import {useGlobalCallOutStore} from "./GlobalCallOutStore.ts";
 import {useModalStore} from "./ModalStore.ts";
 
 type useTodoStoretype = {
@@ -21,6 +21,7 @@ const useTodoStore = create<useTodoStoretype>((set, get) => ({
     setIsLoading: (loading: boolean) => set({loading}),
 
     fetchAllTodos: () => {
+        set({loading: true});
         axios.get("/api/todo")
             .then(
                 (response) => {
@@ -30,7 +31,7 @@ const useTodoStore = create<useTodoStoretype>((set, get) => ({
             )
             .catch(
                 (error) => {
-                    useGlobalAlertStore.getState().setGlobalAlert(error.message || "Failed to fetch todos", "error");
+                    useGlobalCallOutStore.getState().setGlobalCallOut(error.message || "Failed to fetch todos", "error");
                     console.error("Error fetching todos:", error);
                 }
             )
@@ -41,13 +42,13 @@ const useTodoStore = create<useTodoStoretype>((set, get) => ({
         set({loading: true});
         axios.post("/api/todo", newTodo)
             .then((response) => {
-                useGlobalAlertStore.getState().setGlobalAlert("Todo created successfully", "success");
                 console.log("Todo created:", response.data);
+                useGlobalCallOutStore.getState().setGlobalCallOut("Todo created successfully", "success");
                 get().fetchAllTodos();
             })
             .catch((error) => {
                 console.error("Error creating todo:", error);
-                useGlobalAlertStore.getState().setGlobalAlert(error.message || "Failed to create todo", "error");
+                useGlobalCallOutStore.getState().setGlobalCallOut(error.message || "Failed to create todo", "error");
             })
             .finally(() => {
                 useModalStore.getState().setModalOpen(false);
@@ -59,13 +60,13 @@ const useTodoStore = create<useTodoStoretype>((set, get) => ({
         set({loading: true});
         axios.delete(`/api/todo/${id}`)
             .then((response) => {
-                useGlobalAlertStore.getState().setGlobalAlert("Todo deleted successfully", "success");
+                useGlobalCallOutStore.getState().setGlobalCallOut("Todo deleted successfully", "success");
                 console.log("Todo deleted:", response.data);
                 get().fetchAllTodos();
             })
             .catch((error) => {
                 console.error("Error deleting todo:", error);
-                useGlobalAlertStore.getState().setGlobalAlert(error.message || "Failed to delete todo", "error");
+                useGlobalCallOutStore.getState().setGlobalCallOut(error.message || "Failed to delete todo", "error");
             })
             .finally(() => {
                 set({loading: false});

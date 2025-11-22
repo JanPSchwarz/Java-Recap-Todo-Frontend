@@ -10,12 +10,19 @@ import {Box, Flex, Spinner} from "@radix-ui/themes";
 import {useTodoStore} from "../Components/TodoApp/Store/TodoStore.ts";
 import Modal from "../Components/Modal.tsx";
 import CreateTodo from "../Components/TodoApp/Components/CreateTodo.tsx";
+import {useEffect} from "react";
 
 
 export default function TodoApp() {
     const [currentSection] = useLocalStorageState<string>("todoSection", {defaultValue: "board"});
 
-    const {loading} = useTodoStore();
+    const {loading, fetchAllTodos} = useTodoStore();
+
+
+    useEffect(() => {
+            fetchAllTodos()
+        }, []
+    );
 
 
     const renderSection = () => {

@@ -1,7 +1,6 @@
 import type {todoType} from "../Types/TodoAppTypes.ts";
 import {Box, Flex, Grid, Heading, Text} from "@radix-ui/themes";
 import Todo from "./Todo.tsx";
-import {useEffect} from "react";
 import {useTodoStore} from "../Store/TodoStore.ts";
 
 type sectionsType = {
@@ -11,13 +10,7 @@ type sectionsType = {
 
 export function TodoBoard() {
 
-    const {fetchAllTodos, allTodos} = useTodoStore();
-
-
-    useEffect(() => {
-            fetchAllTodos()
-        }, []
-    );
+    const {allTodos} = useTodoStore();
 
 
     const sections: sectionsType[] = [
@@ -38,12 +31,10 @@ export function TodoBoard() {
         <>
             <Grid columns={{initial: "1", xs: "3"}} gap="3" width="auto">
                 {sections.map((section) => (
-                    <>
-                        <Flex justify={"start"} gap={"3"} direction={"column"}>
-                            <Heading align={"center"}>{section.title}</Heading>
-                            <RenderTodoByStatus status={section.status} todos={allTodos}/>
-                        </Flex>
-                    </>
+                    <Flex key={section.status} justify={"start"} gap={"3"} direction={"column"}>
+                        <Heading align={"center"}>{section.title}</Heading>
+                        <RenderTodoByStatus status={section.status} todos={allTodos}/>
+                    </Flex>
                 ))}
             </Grid>
             {allTodos.length == 0 && (
@@ -64,7 +55,7 @@ function RenderTodoByStatus({status, todos}: { status: "OPEN" | "IN_PROGRESS" | 
         <>
             {
                 filteredTodos.map((todo) => (
-                    <Box my={"2"} width={"100%"}>
+                    <Box key={todo.id} my={"2"} width={"100%"}>
                         <Todo key={todo.id} todo={todo}/>
                     </Box>
                 ))

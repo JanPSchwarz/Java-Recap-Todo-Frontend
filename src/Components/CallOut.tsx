@@ -6,7 +6,7 @@ type alertPropsTypes = {
     type: "success" | "error" | "info";
 }
 
-export default function Alert({message, type}: alertPropsTypes) {
+export default function CallOut({message, type}: alertPropsTypes) {
 
     const getAlertColor = () => {
         switch (type) {

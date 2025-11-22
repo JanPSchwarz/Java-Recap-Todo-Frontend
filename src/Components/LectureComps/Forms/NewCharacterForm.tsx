@@ -2,7 +2,7 @@ import {Button, Container, Flex, TextField} from "@radix-ui/themes";
 import {type ChangeEvent, type FormEvent, useRef, useState} from "react";
 import type {RickAndMortyCharacterType} from "../../../../lib/RickAndMortyCharacters.ts";
 import {useRickAndMortyStore} from "../../../Stores/RickAndMortyStore.tsx";
-import {useGlobalAlertStore} from "../../TodoApp/Store/GlobalAlertStore.ts";
+import {useGlobalCallOutStore} from "../../TodoApp/Store/GlobalCallOutStore.ts";
 
 type formElementType = {
     label: string;
@@ -38,7 +38,7 @@ export default function NewCharacterForm({showCreatedCharacter}: formElementProp
 
     const {createCharacter} = useRickAndMortyStore();
 
-    const {setGlobalAlert} = useGlobalAlertStore();
+    const {setGlobalCallOut} = useGlobalCallOutStore();
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -63,7 +63,7 @@ export default function NewCharacterForm({showCreatedCharacter}: formElementProp
             formRef.current.reset();
             showCreatedCharacter(characterData);
             createCharacter(characterData);
-            setGlobalAlert("Character created successfully!", "success");
+            setGlobalCallOut("Character created successfully!", "success");
         }
     }
 
