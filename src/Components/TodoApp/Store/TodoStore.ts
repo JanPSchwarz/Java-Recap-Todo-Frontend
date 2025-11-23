@@ -4,7 +4,7 @@ import type {todoErrorResponse, todoType, todoTypeDTO} from "../Types/TodoAppTyp
 import {useGlobalCallOutStore} from "./GlobalCallOutStore.ts";
 import {useModalStore} from "./ModalStore.ts";
 
-type useTodoStoretype = {
+type useTodoStoreType = {
     loading: boolean;
     setIsLoading: (loading: boolean) => void;
     error: todoErrorResponse | null;
@@ -17,9 +17,10 @@ type useTodoStoretype = {
     updateTodo: (id: string, updatedFields: todoTypeDTO) => void;
     promoteTodo: (todo: todoType) => void;
     demoteTodo: (todo: todoType) => void;
+    createExampleTodos: () => void;
 }
 
-const useTodoStore = create<useTodoStoretype>((set, get) => ({
+const useTodoStore = create<useTodoStoreType>((set, get) => ({
     loading: false,
 
     allTodos: [],
@@ -53,8 +54,8 @@ const useTodoStore = create<useTodoStoretype>((set, get) => ({
     createTodo: (newTodo: todoTypeDTO) => {
         set({loading: true});
         axios.post("/api/todo", newTodo)
-            .then((response) => {
-                console.log("Todo created:", response.data);
+            .then(() => {
+                console.log("Todo created");
                 useGlobalCallOutStore.getState().setGlobalCallOut("Todo created successfully", "success");
                 get().fetchAllTodos();
                 useModalStore.getState().setModalOpen("");
@@ -72,9 +73,9 @@ const useTodoStore = create<useTodoStoretype>((set, get) => ({
     deleteTodo: (id: string) => {
         set({loading: true});
         axios.delete(`/api/todo/${id}`)
-            .then((response) => {
+            .then(() => {
                 useGlobalCallOutStore.getState().setGlobalCallOut("Todo deleted successfully", "success");
-                console.log("Todo deleted:", response.data);
+                console.log("Todo deleted");
                 get().fetchAllTodos();
             })
             .catch((error) => {
@@ -89,8 +90,8 @@ const useTodoStore = create<useTodoStoretype>((set, get) => ({
     updateTodo: (id: string, updatedFields: todoTypeDTO) => {
         set({loading: true});
         axios.put(`/api/todo/${id}`, updatedFields)
-            .then((response) => {
-                console.log("Todo updated:", response.data);
+            .then(() => {
+                console.log("Todo updated");
                 useGlobalCallOutStore.getState().setGlobalCallOut("Todo updated successfully", "success");
                 get().fetchAllTodos();
                 useModalStore.getState().setModalOpen("");
@@ -118,9 +119,8 @@ const useTodoStore = create<useTodoStoretype>((set, get) => ({
 
 
         axios.put(`/api/todo/${todo.id}`, updatedTodo)
-            .then((response) => {
-                console.log("Todo promoted:", response.data);
-                useGlobalCallOutStore.getState().setGlobalCallOut("Todo promoted successfully", "success");
+            .then(() => {
+                console.log("Todo promoted");
                 get().fetchAllTodos();
             })
             .catch((error) => {
@@ -143,9 +143,8 @@ const useTodoStore = create<useTodoStoretype>((set, get) => ({
 
         const updatedTodo = {...todo, status: newStatus};
         axios.put(`/api/todo/${todo.id}`, updatedTodo)
-            .then((response) => {
-                console.log("Todo demoted:", response.data);
-                useGlobalCallOutStore.getState().setGlobalCallOut("Todo demoted successfully", "success");
+            .then(() => {
+                console.log("Todo demoted");
                 get().fetchAllTodos();
             })
             .catch((error) => {
@@ -155,6 +154,22 @@ const useTodoStore = create<useTodoStoretype>((set, get) => ({
             .finally(() => {
                 set({loading: false});
             });
+    },
+
+    createExampleTodos: () => {
+        set({loading: true});
+        axios.post(`/api/todo/createExampleTodos`, {})
+            .then((response) => {
+                console.log("Example todos created");
+                useGlobalCallOutStore.getState().setGlobalCallOut("Example todos created successfully", "success");
+                set({allTodos: response.data});
+            })
+            .catch((error) => {
+                console.error("Error creating example todos:", error);
+                useGlobalCallOutStore.getState().setGlobalCallOut(error.response?.data?.error || "Failed to create example todos", "error");
+            }).finally(() => {
+            set({loading: false});
+        });
     }
 }));
 
