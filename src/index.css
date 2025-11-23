@@ -18,3 +18,8 @@ body {
     min-width: 320px;
     min-height: 100vh;
 }
+
+/*custom backdrop filter for global modal component*/
+.rt-BaseDialogScroll {
+    backdrop-filter: blur(2px);
+}

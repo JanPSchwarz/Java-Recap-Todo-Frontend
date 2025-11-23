@@ -1,17 +1,20 @@
-import {Button, Container, Dialog, Flex, RadioGroup, Text, TextField} from "@radix-ui/themes";
-import React, {useEffect} from "react";
-import {useTodoStore} from "../Store/TodoStore.ts";
 import type {todoTypeDTO} from "../Types/TodoAppTypes.ts";
-import TodoError from "./TodoError.tsx";
+import {useEffect} from "react";
+import {Button, Container, Dialog, Flex, RadioGroup, Text, TextField} from "@radix-ui/themes";
+import {useTodoStore} from "../Store/TodoStore.ts";
 import {AnimatePresence, motion} from "motion/react";
+import TodoError from "./TodoError.tsx";
 
-type createTodoProps = {
-    status?: "OPEN" | "IN_PROGRESS" | "DONE" | undefined;
-}
+export default function UpdateTodo({todoId}: {
+    todoId: string
+}) {
 
-export default function CreateTodo({status}: createTodoProps) {
+    const {updateTodo, loading, error, resetFetchError, allTodos, setError} = useTodoStore();
 
-    const {createTodo, loading, error, resetFetchError} = useTodoStore();
+
+    const todoToUpdate = allTodos.find((todo) => todo.id === todoId);
+
+    console.log(todoToUpdate);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -23,7 +26,12 @@ export default function CreateTodo({status}: createTodoProps) {
             return;
         }
 
-        createTodo(data as todoTypeDTO);
+        if (data.description === todoToUpdate?.description && data.status === todoToUpdate.status) {
+            setError({error: "No changes made"});
+            return;
+        }
+
+        updateTodo(todoId, data as todoTypeDTO);
     }
 
     useEffect(() => {
@@ -42,8 +50,9 @@ export default function CreateTodo({status}: createTodoProps) {
                 <Text as={"label"} htmlFor={"description"}>
                     Description:
                 </Text>
-                <TextField.Root required={true} id={"description"} name={"description"} placeholder={"Laundry.."}/>
-                <RadioGroup.Root name={"status"} defaultValue={status as string ?? "OPEN"} size={"3"}>
+                <TextField.Root required={true} defaultValue={todoToUpdate?.description} id={"description"}
+                                name={"description"} placeholder={"Laundry.."}/>
+                <RadioGroup.Root name={"status"} defaultValue={todoToUpdate?.status} size={"3"}>
                     <Flex justify={"between"}>
                         <RadioGroup.Item value={"OPEN"}
                                          id={"open"}>To-Do</RadioGroup.Item>
@@ -74,10 +83,3 @@ export default function CreateTodo({status}: createTodoProps) {
 
     )
 }
-
-/*
-type todoTypeDTO = {
-    description: string;
-    status: "OPEN" | "IN_PROGRESS" | "DONE";
-}
-* */

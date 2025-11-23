@@ -10,8 +10,8 @@ export type todoTypeDTO = {
 }
 
 export type todoErrorResponse = {
-    timeStamp: string;
-    id: string;
-    status: number;
+    timeStamp?: string;
+    id?: string;
+    status?: number;
     error: string;
 }

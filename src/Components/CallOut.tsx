@@ -1,5 +1,6 @@
 import {Callout} from "@radix-ui/themes";
 import {InfoCircledIcon} from "@radix-ui/react-icons";
+import {motion} from "motion/react";
 
 type alertPropsTypes = {
     message: string;
@@ -22,16 +23,21 @@ export default function CallOut({message, type}: alertPropsTypes) {
     }
 
     return (
-
-        <Callout.Root className={"absolute top-12 right-12"} color={getAlertColor()}>
-            <Callout.Icon>
-                <InfoCircledIcon/>
-            </Callout.Icon>
-            <Callout.Text>
-                {message}
-            </Callout.Text>
-        </Callout.Root>
-
-
+        <motion.div
+            initial={{opacity: 0, x: "100%"}}
+            animate={{opacity: 1, x: 0}}
+            exit={{opacity: 0, x: "100%"}}
+            transition={{duration: 0.3}}
+            className={"absolute top-12 right-12"}
+        >
+            <Callout.Root color={getAlertColor()}>
+                <Callout.Icon>
+                    <InfoCircledIcon/>
+                </Callout.Icon>
+                <Callout.Text>
+                    {message}
+                </Callout.Text>
+            </Callout.Root>
+        </motion.div>
     )
 }

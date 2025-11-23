@@ -10,7 +10,7 @@ type sectionsType = {
 
 export function TodoBoard() {
 
-    const {allTodos} = useTodoStore();
+    const {allTodos, loading} = useTodoStore();
 
 
     const sections: sectionsType[] = [
@@ -37,7 +37,7 @@ export function TodoBoard() {
                     </Flex>
                 ))}
             </Grid>
-            {allTodos.length == 0 && (
+            {allTodos.length == 0 && !loading && (
                 <>
                     <img src={"/nothinghere.svg"} alt={"Nothing found"} className={"object-contain w-1/3 m-auto"}/>
                     <Text align={"center"} className={"text-[var(--accent-9)]"}>No todos, create one or have a

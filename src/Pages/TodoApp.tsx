@@ -61,7 +61,7 @@ export default function TodoApp() {
                 <Spinner size={"3"} style={{position: "absolute", top: "50%", transform: "translateY(-50%)"}}
                          loading={loading}/>
                 <Flex align={"center"} className={"absolute right-0 top-0"} mt={"7"} justify={"center"}>
-                    <Modal title={"Todo"} description={"Create a new To-Do"} buttonText={"New"}>
+                    <Modal id={"createTodo"} title={"Todo"} description={"Create a new To-Do"} buttonText={"New"}>
                         <CreateTodo status={getCurrentStatusBySection()}/>
                     </Modal>
                 </Flex>

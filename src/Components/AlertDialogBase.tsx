@@ -7,7 +7,7 @@ type alertDialogBaseProps = {
     children?: React.ReactNode;
     buttonText?: string;
     title?: string;
-    description?: string;
+    description: string;
     onConfirm: () => void;
     onCancel?: () => void;
 }
@@ -50,11 +50,11 @@ export default function AlertDialogBase(alertDialogBaseProps: alertDialogBasePro
                     <AlertDialog.Title>
                         {alertDialogBaseProps.title}
                     </AlertDialog.Title>}
-                {alertDialogBaseProps.description &&
-                    <AlertDialog.Description>
-                        {alertDialogBaseProps.description}
-                    </AlertDialog.Description>
-                }
+
+                <AlertDialog.Description mb={"5"}>
+                    {alertDialogBaseProps.description}
+                </AlertDialog.Description>
+
 
                 {alertDialogBaseProps.children}
 

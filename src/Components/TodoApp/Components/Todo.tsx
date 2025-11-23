@@ -1,12 +1,14 @@
-import {Button, Card, Flex, IconButton, Text} from "@radix-ui/themes";
+import {Card, Flex, IconButton, Text} from "@radix-ui/themes";
 import type {todoType} from "../Types/TodoAppTypes.ts";
 import {ArrowLeftIcon, ArrowRightIcon, Pencil2Icon} from "@radix-ui/react-icons";
 import {useTodoStore} from "../Store/TodoStore.ts";
 import AlertDialogBase from "../../AlertDialogBase.tsx";
+import Modal from "../../Modal.tsx";
+import UpdateTodo from "./UpdateTodo.tsx";
 
 export default function Todo({todo}: { todo: todoType }) {
 
-    const {deleteTodo} = useTodoStore();
+    const {deleteTodo, promoteTodo, demoteTodo} = useTodoStore();
 
     const getTodoStatusColor = () => {
         switch (todo.status) {
@@ -38,6 +40,14 @@ export default function Todo({todo}: { todo: todoType }) {
         deleteTodo(todo.id);
     }
 
+    const handlePromoteTodo = () => {
+        promoteTodo(todo);
+    }
+
+    const handleDemoteTodo = () => {
+        demoteTodo(todo);
+    }
+
     return (
         <Card style={{background: getTodoStatusColor()}}>
             <Flex justify={"center"} align={"start"} gap={"3"} direction={"column"}>
@@ -45,7 +55,8 @@ export default function Todo({todo}: { todo: todoType }) {
                     <Text className={"italic"} weight={"light"} size={"1"}>{getStatusText()}</Text>
                     <AlertDialogBase onConfirm={deleteTodoHandler}
                                      id={todo.id}
-                                     title={"Are you sure you want to Delete this?"}>
+                                     title={"Delete"}
+                                     description={"Are you sure you want to delete this todo?"}>
                         <Text className={"italic"}>
                             {todo.description}
                         </Text>
@@ -53,22 +64,25 @@ export default function Todo({todo}: { todo: todoType }) {
                 </Flex>
                 <Text className={"w-full"} wrap={"wrap"}>{todo.description}</Text>
                 <Flex gap={"1"} justify={"between"} className={"w-full"}>
-                    <Button size={"1"}>
-                        Edit
-                        <Pencil2Icon/>
-                    </Button>
+                    <Modal id={todo.id} buttonText={"Edit"} buttonSize={"1"} icon={<Pencil2Icon/>} title={"Edit"}
+                           description={"Edit Todo"}>
+                        <UpdateTodo todoId={todo.id}/>
+                    </Modal>
                     {todo.status === "OPEN" &&
-                        <IconButton variant={"soft"} size={"1"}><ArrowRightIcon/></IconButton>
+                        <IconButton onClick={handlePromoteTodo} variant={"soft"}
+                                    size={"1"}><ArrowRightIcon/></IconButton>
                     }
                     {todo.status === "IN_PROGRESS" &&
                         (<Flex gap={"3"}>
-                            <IconButton variant={"soft"} size={"1"}><ArrowLeftIcon/></IconButton>
-                            <IconButton variant={"soft"} size={"1"}><ArrowRightIcon/></IconButton>
+                            <IconButton variant={"soft"} size={"1"}
+                                        onClick={handleDemoteTodo}><ArrowLeftIcon/></IconButton>
+                            <IconButton variant={"soft"} size={"1"}
+                                        onClick={handlePromoteTodo}><ArrowRightIcon/></IconButton>
                         </Flex>)
                     }
                     {todo.status === "DONE" &&
                         <Flex gap={"3"}>
-                            <IconButton variant={"soft"} size={"1"}>
+                            <IconButton onClick={handleDemoteTodo} variant={"soft"} size={"1"}>
                                 <ArrowLeftIcon/></IconButton>
                         </Flex>
                     }
