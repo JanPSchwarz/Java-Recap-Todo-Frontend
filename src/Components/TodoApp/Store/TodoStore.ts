@@ -54,10 +54,10 @@ const useTodoStore = create<useTodoStoreType>((set, get) => ({
     createTodo: (newTodo: todoTypeDTO) => {
         set({loading: true});
         axios.post("/api/todo", newTodo)
-            .then(() => {
-                console.log("Todo created");
+            .then((response) => {
+                console.log("Todo created", response);
                 useGlobalCallOutStore.getState().setGlobalCallOut("Todo created successfully", "success");
-                set({allTodos: [...get().allTodos, newTodo as todoType]});
+                set({allTodos: [...get().allTodos, response.data as todoType]});
                 useModalStore.getState().setModalOpen("");
             })
             .catch((error) => {
