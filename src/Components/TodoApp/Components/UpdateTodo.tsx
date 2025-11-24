@@ -9,7 +9,7 @@ export default function UpdateTodo({todoId}: {
     todoId: string
 }) {
 
-    const {updateTodo, loading, error, resetFetchError, allTodos, setError} = useTodoStore();
+    const {updateTodo, loading, error, resetError, allTodos, setError} = useTodoStore();
 
 
     const todoToUpdate = allTodos.find((todo) => todo.id === todoId);
@@ -38,7 +38,7 @@ export default function UpdateTodo({todoId}: {
         return () => {
             // Clear fetch error on unmount
             if (error) {
-                resetFetchError();
+                resetError();
             }
         }
     }, [])

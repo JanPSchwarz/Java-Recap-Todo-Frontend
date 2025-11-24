@@ -11,7 +11,7 @@ type createTodoProps = {
 
 export default function CreateTodo({status}: createTodoProps) {
 
-    const {createTodo, loading, error, resetFetchError} = useTodoStore();
+    const {createTodo, loading, error, resetError} = useTodoStore();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -30,7 +30,7 @@ export default function CreateTodo({status}: createTodoProps) {
         return () => {
             // Clear fetch error on unmount
             if (error) {
-                resetFetchError();
+                resetError();
             }
         }
     }, [])

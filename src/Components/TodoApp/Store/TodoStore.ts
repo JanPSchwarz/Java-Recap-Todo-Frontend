@@ -9,7 +9,7 @@ type useTodoStoreType = {
     setIsLoading: (loading: boolean) => void;
     error: todoErrorResponse | null;
     setError: (error: todoErrorResponse) => void;
-    resetFetchError: () => void;
+    resetError: () => void;
     allTodos: todoType[];
     fetchAllTodos: () => void;
     createTodo: (newTodo: todoTypeDTO) => void;
@@ -29,7 +29,7 @@ const useTodoStore = create<useTodoStoreType>((set, get) => ({
 
     setError: (error: todoErrorResponse) => set({error}),
 
-    resetFetchError: () => set({error: null}),
+    resetError: () => set({error: null}),
 
     setIsLoading: (loading: boolean) => set({loading}),
 
@@ -57,7 +57,7 @@ const useTodoStore = create<useTodoStoreType>((set, get) => ({
             .then(() => {
                 console.log("Todo created");
                 useGlobalCallOutStore.getState().setGlobalCallOut("Todo created successfully", "success");
-                get().fetchAllTodos();
+                set({allTodos: [...get().allTodos, newTodo as todoType]});
                 useModalStore.getState().setModalOpen("");
             })
             .catch((error) => {
@@ -76,7 +76,7 @@ const useTodoStore = create<useTodoStoreType>((set, get) => ({
             .then(() => {
                 useGlobalCallOutStore.getState().setGlobalCallOut("Todo deleted successfully", "success");
                 console.log("Todo deleted");
-                get().fetchAllTodos();
+                set({allTodos: get().allTodos.filter((todo) => todo.id !== id)});
             })
             .catch((error) => {
                 console.error("Error deleting todo:", error);
@@ -93,7 +93,7 @@ const useTodoStore = create<useTodoStoreType>((set, get) => ({
             .then(() => {
                 console.log("Todo updated");
                 useGlobalCallOutStore.getState().setGlobalCallOut("Todo updated successfully", "success");
-                get().fetchAllTodos();
+                set({allTodos: get().allTodos.map((todo) => todo.id === id ? {...todo, ...updatedFields} : todo)});
                 useModalStore.getState().setModalOpen("");
             })
             .catch((error) => {
@@ -115,13 +115,13 @@ const useTodoStore = create<useTodoStoreType>((set, get) => ({
             return;
         }
 
-        const updatedTodo = {...todo, status: newStatus};
+        const updatedTodo: todoType = {...todo, status: newStatus};
 
 
         axios.put(`/api/todo/${todo.id}`, updatedTodo)
             .then(() => {
                 console.log("Todo promoted");
-                get().fetchAllTodos();
+                set({allTodos: get().allTodos.map((mapTodo): todoType => mapTodo.id === todo.id ? updatedTodo : mapTodo)});
             })
             .catch((error) => {
                 console.error("Error promoting todo:", error);
@@ -141,11 +141,12 @@ const useTodoStore = create<useTodoStoreType>((set, get) => ({
             return;
         }
 
-        const updatedTodo = {...todo, status: newStatus};
+        const updatedTodo: todoType = {...todo, status: newStatus};
+
         axios.put(`/api/todo/${todo.id}`, updatedTodo)
             .then(() => {
                 console.log("Todo demoted");
-                get().fetchAllTodos();
+                set({allTodos: get().allTodos.map((mapTodo): todoType => mapTodo.id === todo.id ? updatedTodo : mapTodo)});
             })
             .catch((error) => {
                 console.error("Error demoting todo:", error);
