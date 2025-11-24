@@ -2,6 +2,7 @@ import type {todoType} from "../Types/TodoAppTypes.ts";
 import {Box, Flex, Grid, Heading, Text} from "@radix-ui/themes";
 import Todo from "./Todo.tsx";
 import {useTodoStore} from "../Store/TodoStore.ts";
+import {motion} from "motion/react";
 
 
 type sectionsType = {
@@ -59,7 +60,9 @@ function RenderTodoByStatus({status, todos}: { status: "OPEN" | "IN_PROGRESS" | 
             {
                 filteredTodos.map((todo) => (
                     <Box key={todo.id} my={"2"} width={"100%"}>
-                        <Todo key={todo.id} todo={todo}/>
+                        <motion.div layoutId={todo.id}>
+                            <Todo key={todo.id} todo={todo}/>
+                        </motion.div>
                     </Box>
                 ))
             }
